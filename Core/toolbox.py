@@ -1,8 +1,8 @@
-from Core import models, serializers
 import hashlib
 
 def server_hash(data):
-    """Generates a server-side hash using the SHA-256 algorithm."""
+    """Generates a server-side hash using the SHA-256 algorithm.
+    Encode function ensures the input data is a string."""
     
     hash = hashlib.sha256(data.encode()).hexdigest()
 
