@@ -22,11 +22,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '*&hin@f=^-%j(iz+h1%m%4*3e$#^dfiv)zyt^ga3apyy6alq$o'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
 ALLOWED_HOSTS = []
 
+# Set DEBUG flag based on the presence of 
+# the HOMELAND_DEBUG env variable. Typically used for deployment
+debug_env = os.getenv("HOMELAND_DEBUG")
+DEBUG = True
+if debug_env == 'False':
+    ALLOWED_HOSTS = ["*"]
+    DEBUG = False
 
 # Application definition
 
@@ -136,3 +140,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = './media/'

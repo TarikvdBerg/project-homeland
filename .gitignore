@@ -1,0 +1,8 @@
+*.sqlite3
+.vscode/
+.idea/
+.atom/
+
+# Cache
+**/__pycache__/
+**/*.pyc

@@ -5,7 +5,7 @@ To get started setup python3 and python3-virtualenv on your machine.
 
 Run the following commands to setup your development environment
 ```bash
-# Installatino & setup
+# Installation & setup
 sudo apt-get install python3 python3-virtualenv
 python3 -m virtualenv venv
 
