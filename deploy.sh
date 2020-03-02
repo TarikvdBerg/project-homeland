@@ -1,6 +1,5 @@
-# Pull repository
-
-git clone git@github.com:TarikvdBerg/project-homeland.git
+# Re-pull repository
+git pull
 
 # Set environment
 setenv HOMELAND_DEBUG False
