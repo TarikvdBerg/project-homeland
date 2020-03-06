@@ -13,12 +13,10 @@ class SCTFAuthBackend(BaseBackend):
         try:
             u = SCTFUser.objects.get(username=username)
         except SCTFUser.DoesNotExist:
-            print("User Not Found")
             return None
 
         # Verify is_verified
         if not u.is_verified:
-            print('User not verified')
             return None
 
         if not check_password(password, u.password):

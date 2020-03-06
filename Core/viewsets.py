@@ -147,7 +147,7 @@ class PasswordViewSet(viewsets.ModelViewSet):
             if pwgroup.user != request.user:
                 return Response({"error": "Access to password group denied"}, status=status.HTTP_403_FORBIDDEN)
         except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Password Group not found"}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = PasswordSerializer(data=parsed_data)
         
