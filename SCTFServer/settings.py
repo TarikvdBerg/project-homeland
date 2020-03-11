@@ -32,6 +32,13 @@ if debug_env == 'False':
     ALLOWED_HOSTS = ["*"]
     DEBUG = False
 
+# Email configuration
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'supercybertaskforce'
+EMAIL_HOST_PASSWORD = 'dikkelul'
+EMAIL_USE_TLS = True
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -61,7 +68,9 @@ ROOT_URLCONF = 'SCTFServer.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'Templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

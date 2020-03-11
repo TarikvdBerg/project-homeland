@@ -20,7 +20,7 @@ class SCTFUserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = SCTFUser
-        fields = ['id', 'username', 'password', 'first_name', 'last_name', 'display_name']
+        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name', 'display_name']
         extra_kwargs = {
             'password': {'write_only': True}
         }
