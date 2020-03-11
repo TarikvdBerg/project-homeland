@@ -84,7 +84,7 @@ def GenerateToken(sender, instance, **kwargs):
 
     print('hallo')
 
-    token = PasswordResetTokenGenerator()
+    token = PasswordResetTokenGenerator().make_token(instance)
     creation_date = datetime.datetime.today()
     expiry_date = creation_date + datetime.timedelta(days=1)
 
@@ -94,17 +94,21 @@ def GenerateToken(sender, instance, **kwargs):
 
     AC.save()
 
-    send_mail(
-        subject='Activate your FirstPass account!',
-        from_email = 'supercybertaskforce@gmail.com',
-        recipient_list = SCTFUser.email,
+    # send_mail(
+    #     subject='Activate your FirstPass account!',
+    #     from_email = 'supercybertaskforce@gmail.com',
+    #     recipient_list = SCTFUser.email,
 
-        message='Hello there.',
-        html_message=render_to_string('activation_email.html'),
+    #     message='Hello there.',
+    #     html_message=render_to_string('activation_email.html'),
 
-        fail_silently=False,
+    #     fail_silently=False,
         
-        auth_user=EMAIL_HOST_USER,
-        auth_password=EMAIL_HOST_PASSWORD)
+    #     auth_user=EMAIL_HOST_USER,
+    #     auth_password=EMAIL_HOST_PASSWORD)
 
     return instance, token, expiry_date
+
+
+# TEST_TOKEN = PasswordResetTokenGenerator().make_token('john')
+# print(TEST_TOKEN)

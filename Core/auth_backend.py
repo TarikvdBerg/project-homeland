@@ -15,7 +15,7 @@ class SCTFAuthBackend(BaseBackend):
         except SCTFUser.DoesNotExist:
             return None
 
-        if not u.is_staf and not u.is_superuser:
+        if not u.is_staff and not u.is_superuser:
 
         # Verify is_verified
             if not u.is_verified:
