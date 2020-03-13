@@ -9,7 +9,6 @@ from django.dispatch import receiver
 
 from SCTFServer.settings import AUTH_USER_MODEL
 
-
 class SCTFUser(AbstractUser):
     """
     Extends the base Django User, the SCTFUser has additional properties for
@@ -19,6 +18,7 @@ class SCTFUser(AbstractUser):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    email = models.EmailField(('email'), unique=True)
 
     is_verified = models.BooleanField(default=False)
 
@@ -64,51 +64,3 @@ class Password(models.Model):
     enc_password = models.TextField()
 
     parent_group = models.ForeignKey("Core.PasswordGroup", on_delete=models.CASCADE)
-
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.template.loader import render_to_string
-from django.db.models.signals import post_save
-from django.core.mail import send_mail
-from django.dispatch import receiver
-
-from Core.models import AccountVerification, SCTFUser
-from SCTFServer.settings import EMAIL_HOST, EMAIL_HOST_PASSWORD, EMAIL_PORT, EMAIL_HOST_USER
-
-import hashlib
-import datetime
-
-@receiver(post_save, sender=SCTFUser)
-def GenerateToken(sender, instance, **kwargs):
-    """Generates a token for new users to validate
-    the registration and activate an account."""
-
-    print('hallo')
-
-    token = PasswordResetTokenGenerator().make_token(instance)
-    creation_date = datetime.datetime.today()
-    expiry_date = creation_date + datetime.timedelta(days=1)
-
-    AC = AccountVerification(user=instance,
-                     expiry_date=expiry_date,
-                     verification_token=token)
-
-    AC.save()
-
-    # send_mail(
-    #     subject='Activate your FirstPass account!',
-    #     from_email = 'supercybertaskforce@gmail.com',
-    #     recipient_list = SCTFUser.email,
-
-    #     message='Hello there.',
-    #     html_message=render_to_string('activation_email.html'),
-
-    #     fail_silently=False,
-        
-    #     auth_user=EMAIL_HOST_USER,
-    #     auth_password=EMAIL_HOST_PASSWORD)
-
-    return instance, token, expiry_date
-
-
-# TEST_TOKEN = PasswordResetTokenGenerator().make_token('john')
-# print(TEST_TOKEN)

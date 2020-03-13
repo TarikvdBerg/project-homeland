@@ -22,35 +22,3 @@ def ValidateHash(client_hash, server_hash):
     """Compares the server-side generated hash to the client-side hash."""
 
     return client_hash != server_hash
-
-@receiver(post_save, sender=SCTFUser)
-def GenerateToken(sender, instance, **kwargs):
-    """Generates a token for new users to validate
-    the registration and activate an account."""
-
-    print('hallo')
-
-    token = PasswordResetTokenGenerator()
-    creation_date = datetime.datetime.today()
-    expiry_date = creation_date + datetime.timedelta(days=1)
-
-    AC = AccountVerification(user=instance,
-                     expiry_date=expiry_date,
-                     verification_token=token)
-
-    AC.save()
-
-    send_mail(
-        subject='Activate your FirstPass account!',
-        from_email = 'supercybertaskforce@gmail.com',
-        recipient_list = SCTFUser.email,
-
-        message=render_to_string('activate_email.html'),
-        html_message=render_to_string('activate_email.html'),
-
-        fail_silently=False,
-        
-        auth_user=EMAIL_HOST_USER,
-        auth_password=EMAIL_HOST_PASSWORD)
-
-    return instance, token, expiry_date
