@@ -10,6 +10,7 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
 
 from Core.models import AccountVerification, SCTFUser
+from Core.serializers import SCTFUserSerializer
 from SCTFServer.settings import EMAIL_HOST, EMAIL_HOST_PASSWORD, EMAIL_PORT, EMAIL_HOST_USER
 
 import hashlib
@@ -42,21 +43,28 @@ def GenerateToken(sender, instance, **kwargs):
 
     return instance, token, expiry_date
 
-@receiver(post_save, sender=GenerateToken)
+@receiver(post_save, sender=SCTFUser)
 def ActivationEmail(sender, instance, **kwargs):
     """Sends an activation email to the user."""
 
-    with open(settings.BASE_DIR + "/templates/activation_email.html") as AE:
-        signup_message = AE.read()
+    UserEmail = instance.email
+    ActivationURL = "http://localhost:8000/activate/"
 
     send_mail(subject="Activate your FirstPass account!",
-              from_email="supercybertaskforce@gmail.com",
-              recipient_list=SCTFUser.email,
+              from_email=EMAIL_HOST_USER,
+              recipient_list=[UserEmail],
 
-              message="Hello there.",
-              html_message=signup_message,
+              # To do:
+              # Add activation token to email input.
+              # Create model for Activation & URL.
+              # Add HTML template to model (later).
+
+              message=render_to_string("activation_message.txt"),
+            #   html_message=activation_email.html,
 
               fail_silently=False,
               auth_user=EMAIL_HOST_USER,
               auth_password=EMAIL_HOST_PASSWORD
-    )
+)
+
+# def VerifyAccountToken():

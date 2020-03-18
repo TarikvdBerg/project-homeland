@@ -1,0 +1,10 @@
+Hi,
+
+Welcome to FirstPass! Please activate your account using the following link:
+
+{{ ActivationURL }}
+
+
+All the best,
+
+FirstPass Team
