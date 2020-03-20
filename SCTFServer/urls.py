@@ -16,11 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from Core.views import ActivationEmail
-
 urlpatterns = [
     path('', include("Core.urls")),
-    path('admin/', admin.site.urls),
-    path('activation/', ActivationEmail)
+    path('admin/', admin.site.urls)
 ]
 

@@ -64,3 +64,11 @@ class Password(models.Model):
     enc_password = models.TextField()
 
     parent_group = models.ForeignKey("Core.PasswordGroup", on_delete=models.CASCADE)
+
+class Activate(models.Model):
+    """
+    Model for handling the account activation.
+    URL: 127.0.0.1/activate
+    """
+
+    Token = models.CharField(max_length=24)

@@ -4,6 +4,9 @@ from django.template.loader import render_to_string, get_template
 from django.db.models.signals import post_save
 from django.core.mail import send_mail
 from django.dispatch import receiver
+from django.http import HttpResponse
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
@@ -44,27 +47,30 @@ def GenerateToken(sender, instance, **kwargs):
     return instance, token, expiry_date
 
 @receiver(post_save, sender=SCTFUser)
-def ActivationEmail(sender, instance, **kwargs):
+def SendActivationEmail(sender, instance, **kwargs):
     """Sends an activation email to the user."""
 
-    UserEmail = instance.email
-    ActivationURL = "http://localhost:8000/activate/"
+    ActivationToken = AccountVerification.objects.latest('id').verification_token
 
     send_mail(subject="Activate your FirstPass account!",
               from_email=EMAIL_HOST_USER,
-              recipient_list=[UserEmail],
+              recipient_list=[instance.email],
 
               # To do:
-              # Add activation token to email input.
-              # Create model for Activation & URL.
-              # Add HTML template to model (later).
+              # Create /activate with HTML template.
 
-              message=render_to_string("activation_message.txt"),
-            #   html_message=activation_email.html,
+              message=render_to_string("activation_message.txt", {
+                  'user': instance.username,
+                  'url':'http://localhost:8000/activate/',
+                  'token':ActivationToken,
+              }),
 
               fail_silently=False,
               auth_user=EMAIL_HOST_USER,
               auth_password=EMAIL_HOST_PASSWORD
 )
 
-# def VerifyAccountToken():
+# @receiver(post_save, sender=SendActivationEmail)
+# def ActivateHTML(request)
+
+
