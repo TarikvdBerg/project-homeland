@@ -1,0 +1,15 @@
+{% autoescape off %}
+Hi {{ user }},
+
+Welcome to FirstPass! Please activate your account using the following instructions.
+
+Click on {{ url }} and insert your activation token to confirm your registration.
+
+Your activation token: {{ token }}
+
+
+
+All the best,
+
+FirstPass Team
+{% endautoescape %}

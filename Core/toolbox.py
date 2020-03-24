@@ -1,6 +1,11 @@
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.template.loader import render_to_string
+from django.db.models.signals import post_save
+from django.core.mail import send_mail
+from django.dispatch import receiver
 
 from Core.models import AccountVerification, SCTFUser
+from SCTFServer.settings import EMAIL_HOST, EMAIL_HOST_PASSWORD, EMAIL_PORT, EMAIL_HOST_USER
 
 import hashlib
 import datetime
@@ -17,25 +22,3 @@ def ValidateHash(client_hash, server_hash):
     """Compares the server-side generated hash to the client-side hash."""
 
     return client_hash != server_hash
-
-def GenerateToken(user):
-    """Generates a token for new users to validate
-    the registration and activate an account."""
-
-    token = PasswordResetTokenGenerator()
-    creation_date = datetime.datetime.today()
-    expiry_date = creation_date + datetime.timedelta(days=1)
-
-    AC = AccountVerification(user=user,
-                     expiry_date=expiry_date,
-                     verification_token=token)
-    
-    # AC.objects.create()
-
-    AC.save()
-
-    return user, token, expiry_date
-
-user = SCTFUser.objects.get(username="roy")
-token = GenerateToken(user=user)
-print(token)

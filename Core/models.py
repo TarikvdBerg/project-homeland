@@ -2,11 +2,12 @@ import binascii
 import os
 import uuid
 
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import *
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from SCTFServer.settings import AUTH_USER_MODEL
-
 
 class SCTFUser(AbstractUser):
     """
@@ -17,6 +18,7 @@ class SCTFUser(AbstractUser):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    email = models.EmailField(('email'), unique=True)
 
     is_verified = models.BooleanField(default=False)
 
@@ -63,3 +65,11 @@ class Password(models.Model):
     enc_password = models.TextField()
 
     parent_group = models.ForeignKey("Core.PasswordGroup", on_delete=models.CASCADE)
+
+class Activate(models.Model):
+    """
+    Model for handling the account activation.
+    URL: 127.0.0.1/activate
+    """
+
+    Token = models.CharField(max_length=24)

@@ -28,9 +28,16 @@ ALLOWED_HOSTS = []
 # the HOMELAND_DEBUG env variable. Typically used for deployment
 debug_env = os.getenv("HOMELAND_DEBUG")
 DEBUG = True
-if debug_env == 'False':
-    ALLOWED_HOSTS = ["*"]
-    DEBUG = False
+# if debug_env == 'False':
+#     ALLOWED_HOSTS = ["*"]
+#     DEBUG = False
+
+# Email configuration
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'supercybertaskforce@gmail.com'
+EMAIL_HOST_PASSWORD = 'dikkelul'
+EMAIL_USE_TLS = True
 
 # Application definition
 
@@ -61,7 +68,9 @@ ROOT_URLCONF = 'SCTFServer.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
