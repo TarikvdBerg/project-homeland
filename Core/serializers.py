@@ -51,4 +51,4 @@ class PasswordGroupSerializer(serializers.ModelSerializer):
 class PasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Password
-        fields = ['id', 'enc_name', 'enc_description', 'enc_password', 'parent_group']
+        fields = ['id', 'enc_name', 'enc_description', 'enc_username', 'enc_password', 'parent_group']

@@ -59,6 +59,7 @@ class Password(models.Model):
 
     enc_name = models.TextField()
     enc_description = models.TextField()
+    enc_username = models.TextField()
     enc_password = models.TextField()
 
     parent_group = models.ForeignKey("Core.PasswordGroup", on_delete=models.CASCADE)
