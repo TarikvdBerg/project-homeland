@@ -3,8 +3,11 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from datetime import datetime, timedelta
 
+def getCacheTimeout():
+    return datetime.now() + timedelta(hours=6)
+
 class SCTFUserSerializer(serializers.ModelSerializer):
-    valid_until = datetime.now() + timedelta(hours=6)
+    valid_until = Field(source='getCacheTimeout')
 
     def create(self, validated_data):
         user = get_user_model().objects.create(
@@ -34,7 +37,7 @@ class SCTFUserSerializer(serializers.ModelSerializer):
 
 class PasswordGroupSerializer(serializers.ModelSerializer):
     user_id = serializers.UUIDField()
-    valid_until = datetime.now() + timedelta(hours=6)
+    valid_until = Field(source='getCacheTimeout')
 
     def create(self, validated_data):
         pwgroup = PasswordGroup.objects.create(
@@ -56,7 +59,7 @@ class PasswordGroupSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'user_id')
 
 class PasswordSerializer(serializers.ModelSerializer):
-    valid_until = datetime.now() + timedelta(hours=6)
+    valid_until = Field(source='getCacheTimeout')
 
     class Meta:
         model = Password
