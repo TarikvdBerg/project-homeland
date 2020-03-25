@@ -7,6 +7,8 @@ from django.dispatch import receiver
 from django.http import HttpResponse
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.views.generic import View
+from django.shortcuts import render
 
 from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
@@ -29,28 +31,23 @@ class LoginView(KnoxLoginView):
         login(request, user)
         return super(LoginView, self).post(request, format=None)
 
-@receiver(post_save, sender=SCTFUser)
-def GenerateToken(sender, instance, **kwargs):
-    """Generates a token for new users to validate
-    the registration and activate an account."""
+class ActivateView(View):
 
-    token = PasswordResetTokenGenerator().make_token(instance)
-    creation_date = datetime.datetime.today()
-    expiry_date = creation_date + datetime.timedelta(days=1)
-
-    AC = AccountVerification(user=instance,
-                     expiry_date=expiry_date,
-                     verification_token=token)
-
-    AC.save()
-
-    return instance, token, expiry_date
+    def get(self, request):
+        return render(request, "activation_email.html")        
 
 @receiver(post_save, sender=SCTFUser)
 def SendActivationEmail(sender, instance, **kwargs):
     """Sends an activation email to the user."""
 
-    ActivationToken = AccountVerification.objects.latest('id').verification_token
+    creation_date = datetime.datetime.today()
+    expiry_date = creation_date + datetime.timedelta(days=1)
+
+    AC = AccountVerification(user=instance,
+                     expiry_date=expiry_date,
+                     verification_token=PasswordResetTokenGenerator().make_token(instance))
+
+    AC.save()
 
     send_mail(subject="Activate your FirstPass account!",
               from_email=EMAIL_HOST_USER,
@@ -62,13 +59,14 @@ def SendActivationEmail(sender, instance, **kwargs):
               message=render_to_string("activation_message.txt", {
                   'user': instance.username,
                   'url':'http://localhost:8000/activate/',
-                  'token':ActivationToken,
+                  'token':AC.verification_token,
               }),
 
               fail_silently=False,
               auth_user=EMAIL_HOST_USER,
               auth_password=EMAIL_HOST_PASSWORD
 )
+
 
 # @receiver(post_save, sender=SendActivationEmail)
 # def ActivateHTML(request)
