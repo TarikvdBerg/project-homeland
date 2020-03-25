@@ -1,8 +1,10 @@
 from Core.models import *
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from datetime import datetime, timedelta
 
 class SCTFUserSerializer(serializers.ModelSerializer):
+    valid_until = datetime.now() + timedelta(hours=6)
 
     def create(self, validated_data):
         user = get_user_model().objects.create(
@@ -24,7 +26,7 @@ class SCTFUserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = SCTFUser
-        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name', 'display_name']
+        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name', 'display_name', 'valid_until']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -32,6 +34,7 @@ class SCTFUserSerializer(serializers.ModelSerializer):
 
 class PasswordGroupSerializer(serializers.ModelSerializer):
     user_id = serializers.UUIDField()
+    valid_until = datetime.now() + timedelta(hours=6)
 
     def create(self, validated_data):
         pwgroup = PasswordGroup.objects.create(
@@ -49,10 +52,12 @@ class PasswordGroupSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = PasswordGroup
-        fields = ['id', 'enc_name', 'user_id']
+        fields = ['id', 'enc_name', 'user_id', 'valid_until']
         read_only_fields = ('id', 'user_id')
 
 class PasswordSerializer(serializers.ModelSerializer):
+    valid_until = datetime.now() + timedelta(hours=6)
+
     class Meta:
         model = Password
-        fields = ['id', 'enc_name', 'enc_description', 'enc_username', 'enc_password', 'parent_group']
+        fields = ['id', 'enc_name', 'enc_description', 'enc_username', 'enc_password', 'parent_group', 'valid_until']

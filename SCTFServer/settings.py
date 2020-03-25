@@ -26,11 +26,11 @@ ALLOWED_HOSTS = []
 
 # Set DEBUG flag based on the presence of 
 # the HOMELAND_DEBUG env variable. Typically used for deployment
-debug_env = os.getenv("HOMELAND_DEBUG")
+debug_env = os.getenv("HOST")
 DEBUG = True
-# if debug_env == 'False':
-#     ALLOWED_HOSTS = ["*"]
-#     DEBUG = False
+if debug_env == 'homeland':
+    ALLOWED_HOSTS = ["*"]
+    DEBUG = False
 
 # Email configuration
 EMAIL_HOST = 'smtp.gmail.com'
