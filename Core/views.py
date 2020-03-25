@@ -63,14 +63,17 @@ def SendActivationEmail(sender, instance, **kwargs):
             #   }),
 
               message=None,
-              html_message=render_to_string("activation_email.html"),
+              html_message=render_to_string("activation_email.html", {
+                  'user': instance.username,
+                  'token': AC.verification_token,
+              }),
 
               fail_silently=False,
               auth_user=EMAIL_HOST_USER,
-              auth_password=EMAIL_HOST_PASSWORD
-)
+              auth_password=EMAIL_HOST_PASSWORD)
+              
 
-
+    
 # @receiver(post_save, sender=SendActivationEmail)
 # def ActivateHTML(request)
 
