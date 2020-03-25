@@ -56,11 +56,14 @@ def SendActivationEmail(sender, instance, **kwargs):
               # To do:
               # Create /activate with HTML template.
 
-              message=render_to_string("activation_message.txt", {
-                  'user': instance.username,
-                  'url':'http://localhost:8000/activate/',
-                  'token':AC.verification_token,
-              }),
+            #   message=render_to_string("activation_message.txt", {
+            #       'user': instance.username,
+            #       'url':'http://localhost:8000/activate/',
+            #       'token':AC.verification_token,
+            #   }),
+
+              message=None,
+              html_message=render_to_string("activation_email.html"),
 
               fail_silently=False,
               auth_user=EMAIL_HOST_USER,
