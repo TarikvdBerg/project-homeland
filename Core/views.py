@@ -34,7 +34,7 @@ class LoginView(KnoxLoginView):
 class ActivateView(View):
 
     def get(self, request):
-        return render(request, "activation_email.html")        
+        return render(request, "activation_page.html")        
 
 @receiver(post_save, sender=SCTFUser)
 def SendActivationEmail(sender, instance, **kwargs):
