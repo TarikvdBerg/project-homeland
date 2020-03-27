@@ -33,7 +33,7 @@ class LoginView(KnoxLoginView):
 
 class ActivateView(View):
 
-    def get(self, request):
+    def get(self, request, uid):
         return render(request, "activation_page.html")        
 
 @receiver(post_save, sender=SCTFUser)
@@ -48,6 +48,8 @@ def SendActivationEmail(sender, instance, **kwargs):
                      verification_token=PasswordResetTokenGenerator().make_token(instance))
 
     AC.save()
+
+    uid = urlsafe_base64_encode(force_bytes(instance.username))
 
     send_mail(subject="Activate your FirstPass account!",
               from_email=EMAIL_HOST_USER,
@@ -66,6 +68,7 @@ def SendActivationEmail(sender, instance, **kwargs):
               html_message=render_to_string("activation_email.html", {
                   'user': instance.username,
                   'token': AC.verification_token,
+                  'link': "http://localhost:8000/activate/{0}".format(uid),
               }),
 
               fail_silently=False,
