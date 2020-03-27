@@ -14,9 +14,7 @@ def GenerateHash(data):
     """Generates a server-side hash using the SHA-256 algorithm.
     Encode function ensures the input data is a string."""
     
-    hash = hashlib.sha256(data.encode()).hexdigest()
-
-    return hash
+    return hashlib.sha256(data.encode()).hexdigest()
 
 def ValidateHash(client_hash, server_hash):
     """Compares the server-side generated hash to the client-side hash."""

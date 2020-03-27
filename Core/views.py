@@ -40,29 +40,25 @@ class ActivateView(View):
 def SendActivationEmail(sender, instance, **kwargs):
     """Sends an activation email to the user."""
 
+    # Stamps the token with a creation date & expiry date (1 day).
     creation_date = datetime.datetime.today()
     expiry_date = creation_date + datetime.timedelta(days=1)
 
+    # Saves information received from SCTFUser to model.
     AC = AccountVerification(user=instance,
                      expiry_date=expiry_date,
+
+                     # Creates token in AC save.
                      verification_token=PasswordResetTokenGenerator().make_token(instance))
 
     AC.save()
 
+    # Creates base64 string to identify user with.
     uid = urlsafe_base64_encode(force_bytes(instance.username))
 
     send_mail(subject="Activate your FirstPass account!",
               from_email=EMAIL_HOST_USER,
               recipient_list=[instance.email],
-
-              # To do:
-              # Create /activate with HTML template.
-
-            #   message=render_to_string("activation_message.txt", {
-            #       'user': instance.username,
-            #       'url':'http://localhost:8000/activate/',
-            #       'token':AC.verification_token,
-            #   }),
 
               message=None,
               html_message=render_to_string("activation_email.html", {
@@ -71,6 +67,7 @@ def SendActivationEmail(sender, instance, **kwargs):
                   'link': "http://localhost:8000/activate/{0}".format(uid),
               }),
 
+              # Fix server-side password saving later.
               fail_silently=False,
               auth_user=EMAIL_HOST_USER,
               auth_password=EMAIL_HOST_PASSWORD)
