@@ -34,7 +34,17 @@ class LoginView(KnoxLoginView):
 class ActivateView(View):
 
     def get(self, request, uid):
-        return render(request, "activation_page.html")        
+        return render(request, "activation_page.html")
+
+    def post(self, request, uid):
+
+        print(request.POST)
+
+        # To do: compare token to stored AC token.
+        # Activate account = is_active = True.
+
+        return render(request, "activation_page.html")
+        
 
 @receiver(post_save, sender=SCTFUser)
 def SendActivationEmail(sender, instance, **kwargs):
