@@ -19,7 +19,6 @@ class SCTFUser(AbstractUser):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(('email'), unique=True)
-    password = models.CharField(max_length=50, blank=True)
 
     is_verified = models.BooleanField(default=False)
 
