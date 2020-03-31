@@ -24,7 +24,9 @@ class SCTFUserSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         # instance.username = validated_data.get('username')
-        instance.set_password(validated_data.get('password'))
+        pw = validated_data.get('password', None)
+        if pw != None:
+            instance.set_password(pw)
         instance.save()
         return instance
     
@@ -32,7 +34,7 @@ class SCTFUserSerializer(serializers.ModelSerializer):
         model = SCTFUser
         fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name', 'display_name', 'valid_until']
         extra_kwargs = {
-            'password': {'write_only': True}
+            'password': {'write_only': True, 'required': False}
         }
 
 
