@@ -38,14 +38,21 @@ class ActivateView(View):
 
     def post(self, request, uid):
 
-        print(request.POST)
-
         # To do: compare token to stored AC token.
         # Activate account = is_active = True.
 
         InputToken = request.POST['token']
 
-        return HttpResponse("Your account has been activated.")      
+        try:
+            AccountToken = AccountVerification.objects.get(verification_token=InputToken)
+            user = AccountToken.user
+            user.is_active = True
+            user.save()
+
+            return HttpResponse("Your account has been activated.")
+
+        except AccountVerification.DoesNotExist:
+            return HttpResponse("You entered an invalid token.")
 
 @receiver(post_save, sender=SCTFUser)
 def SendActivationEmail(sender, created, instance, **kwargs):
@@ -84,3 +91,5 @@ def SendActivationEmail(sender, created, instance, **kwargs):
                 fail_silently=False,
                 auth_user=EMAIL_HOST_USER,
                 auth_password=EMAIL_HOST_PASSWORD)
+
+        print("Email sent.")

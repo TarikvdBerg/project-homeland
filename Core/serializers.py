@@ -44,7 +44,6 @@ class SCTFUserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True}
         }
 
-
 class PasswordGroupSerializer(serializers.ModelSerializer):
     user_id = serializers.UUIDField()
     valid_until = serializers.ReadOnlyField(source='getCacheTimeout')

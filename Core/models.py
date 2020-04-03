@@ -50,6 +50,9 @@ class AccountVerification(models.Model):
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     expiry_date = models.DateTimeField()
 
+    def __str__(self):
+        return self.verification_token
+
 class PasswordGroup(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
