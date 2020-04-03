@@ -32,7 +32,7 @@ class SCTFUserViewSet(viewsets.ModelViewSet):
     def update(self, request, pk=None):
         if str(request.user.id) != pk:
             return Response(status=status.HTTP_403_FORBIDDEN)
-
+        
         return super().update(request)
 
     def destroy(self, request, pk=None):
