@@ -43,48 +43,44 @@ class ActivateView(View):
         # To do: compare token to stored AC token.
         # Activate account = is_active = True.
 
-        return render(request, "activation_page.html")
-        
+        InputToken = request.POST['token']
+
+        return HttpResponse("Your account has been activated.")      
 
 @receiver(post_save, sender=SCTFUser)
-def SendActivationEmail(sender, instance, **kwargs):
+def SendActivationEmail(sender, created, instance, **kwargs):
     """Sends an activation email to the user."""
 
-    # Stamps the token with a creation date & expiry date (1 day).
-    creation_date = datetime.datetime.today()
-    expiry_date = creation_date + datetime.timedelta(days=1)
+    if created:
 
-    # Saves information received from SCTFUser to model.
-    AC = AccountVerification(user=instance,
-                     expiry_date=expiry_date,
+        # Stamps the token with a creation date & expiry date (1 day).
+        creation_date = datetime.datetime.today()
+        expiry_date = creation_date + datetime.timedelta(days=1)
 
-                     # Creates token in AC save.
-                     verification_token=PasswordResetTokenGenerator().make_token(instance))
+        # Saves information received from SCTFUser to model.
+        AC = AccountVerification(user=instance,
+                        expiry_date=expiry_date,
 
-    AC.save()
+                        # Creates token in AC save.
+                        verification_token=PasswordResetTokenGenerator().make_token(instance))
 
-    # Creates base64 string to identify user with.
-    uid = urlsafe_base64_encode(force_bytes(instance.username))
+        AC.save()
 
-    send_mail(subject="Activate your FirstPass account!",
-              from_email=EMAIL_HOST_USER,
-              recipient_list=[instance.email],
+        # Creates base64 string to identify user with.
+        uid = urlsafe_base64_encode(force_bytes(instance.username))
 
-              message=None,
-              html_message=render_to_string("activation_email.html", {
-                  'user': instance.username,
-                  'token': AC.verification_token,
-                  'link': "http://localhost:8000/activate/{0}".format(uid),
-              }),
+        send_mail(subject="Activate your FirstPass account!",
+                from_email=EMAIL_HOST_USER,
+                recipient_list=[instance.email],
 
-              # Fix server-side password saving later.
-              fail_silently=False,
-              auth_user=EMAIL_HOST_USER,
-              auth_password=EMAIL_HOST_PASSWORD)
-              
+                message=None,
+                html_message=render_to_string("activation_email.html", {
+                    'user': instance.username,
+                    'token': AC.verification_token,
+                    'link': "http://localhost:8000/activate/{0}".format(uid),
+                }),
 
-    
-# @receiver(post_save, sender=SendActivationEmail)
-# def ActivateHTML(request)
-
-
+                # Fix server-side password saving later.
+                fail_silently=False,
+                auth_user=EMAIL_HOST_USER,
+                auth_password=EMAIL_HOST_PASSWORD)
