@@ -9,6 +9,7 @@ from Core.models import Password, PasswordGroup, SCTFUser
 from Core.serializers import (PasswordGroupSerializer, PasswordSerializer,
                               SCTFUserSerializer)
 from rest_framework.parsers import JSONParser
+from rest_framework.decorators import action
 import io
 
 class SCTFUserViewSet(viewsets.ModelViewSet):
@@ -20,6 +21,10 @@ class SCTFUserViewSet(viewsets.ModelViewSet):
         user_set = self.queryset.filter(pk=request.user.id)
         serializer = SCTFUserSerializer(user_set, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['GET'])
+    def current(self, request, pk=None):
+        return Response(status=status.HTTP_200_OK, data=SCTFUserSerializer(request.user).data)
     
     def retrieve(self, request, pk=None):
         if str(request.user.id) != pk:

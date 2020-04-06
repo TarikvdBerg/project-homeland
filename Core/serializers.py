@@ -16,7 +16,7 @@ class SCTFUserSerializer(serializers.ModelSerializer):
             first_name = validated_data['first_name'],
             last_name = validated_data['last_name'],
         )
-        user.set_password(validated_data['password'])
+        user.set_password(validated_data['new_password'])
         user.is_active = False
 
         user.save()
@@ -24,24 +24,24 @@ class SCTFUserSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         # instance.username = validated_data.get('username')
-        pw = validated_data.get('password', None)
+        pw = validated_data.get('new_password', None)
         if pw != None and pw != "":
             instance.set_password(pw)
 
         instance.email = validated_data.get("email", instance.email)
         instance.first_name = validated_data.get("first_name", instance.first_name)
         instance.last_name = validated_data.get("last_name", instance.last_name)
-        instance.email = validated_data.get("email", instance.email)
-
 
         instance.save()
         return instance
     
     class Meta:
         model = SCTFUser
-        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name', 'display_name', 'valid_until']
+        fields = ['id', 'username', 'new_password', 'email', 'first_name', 'last_name', 'display_name', 'valid_until']
         extra_kwargs = {
-            'password': {'write_only': True}
+            'new_password': {
+                'write_only': True
+            }
         }
 
 class PasswordGroupSerializer(serializers.ModelSerializer):

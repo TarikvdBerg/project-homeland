@@ -13,7 +13,7 @@ class SCTFUserAccessPolicy(AccessPolicy):
             "effect": "allow",
         },
         {
-            "action": ["retrieve", "update", "destroy"],
+            "action": ["current", "retrieve", "update", "destroy"],
             "principal": ["authenticated", "group:admin"],
             "effect": "allow",
         }
