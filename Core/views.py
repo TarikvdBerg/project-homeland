@@ -91,5 +91,3 @@ def SendActivationEmail(sender, created, instance, **kwargs):
                 fail_silently=False,
                 auth_user=EMAIL_HOST_USER,
                 auth_password=EMAIL_HOST_PASSWORD)
-
-        print("Email sent.")
