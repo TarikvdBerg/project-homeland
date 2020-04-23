@@ -17,7 +17,6 @@ class SCTFUserSerializer(serializers.ModelSerializer):
             last_name = validated_data['last_name'],
         )
         user.set_password(validated_data['new_password'])
-        user.is_active = False
 
         user.save()
         return user
