@@ -47,6 +47,7 @@ class ActivateView(View):
             AccountToken = AccountVerification.objects.get(verification_token=InputToken)
             user = AccountToken.user
             user.is_active = True
+            user.is_verified = True
             user.save()
 
             return HttpResponse("Your account has been activated.")
